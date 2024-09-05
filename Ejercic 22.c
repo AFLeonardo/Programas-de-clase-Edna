@@ -5,7 +5,7 @@ struct Estudiante {
     char Nombre[40];
     int Matricula;
     int Semestre;
-    int Promedio[9]; // Máximo 9 semestres
+    float Promedio[9]; // Máximo 9 semestres
     char Carrera[40];
 };
 
@@ -17,112 +17,126 @@ struct Alumnos_computacion_destacados {
     struct Estudiante Datos;
 };
 
-int main() {
+int main() 
+{
     char agregar;
-    int i = 0, j, alumnos = 0;
-    struct Estudiante Datos[20]; // Máximo 20 estudiantes
-    struct Alumnos_destacados Datos_destacados[20];
-    struct Alumnos_computacion_destacados Datos_destacados_computacion[20];
+    int i = 0, j, 
+    alumnos = 0,
+    contador_destacados = 0,
+    contador_computacion = 0,
+    contador_carrera = 0;
+    struct Estudiante Alumnos[20]; // Máximo 20 estudiantes
+    struct Alumnos_destacados Alumnos_promedio_superior[20];
+    struct Alumnos_computacion_destacados Alumnos_computacion[20];
+    struct Alumnos_destacados Alumnos_x_carrera[20];
+    
     char Carrera[30];
+    float promedio_general[20] = {0};
 
-    printf("¿Quieres agregar datos? (s/n): ");
+    printf("Quieres agregar datos? (s/n): ");
     scanf(" %c", &agregar);
 
     while (agregar == 's' && i < 20) {
         printf("Ingresa tu nombre:\n");
-        getchar(); // Consumir el salto de línea previo
-        fgets(Datos[i].Nombre, 30, stdin);
-        Datos[i].Nombre[strcspn(Datos[i].Nombre, "\n")] = 0; // Eliminar el salto de línea
+        fflush(stdin);
+        gets(Alumnos[i].Nombre);
 
-        // Validación de matrícula mayor a 0
+        // Validacion de matricula
         do {
             printf("Ingresa tu matricula:\n");
-            scanf("%d", &Datos[i].Matricula);
+            scanf("%d", &Alumnos[i].Matricula);
 
-            if (Datos[i].Matricula <= 0)
+            if (Alumnos[i].Matricula <= 0)
                 printf("La matricula no puede ser menor o igual a 0. Intenta de nuevo.\n");
-        } while (Datos[i].Matricula <= 0);
+        } while (Alumnos[i].Matricula <= 0);
 
-        // Validar semestre entre 1 y 9
+        //Validacion de semestre
         do {
-            printf("¿En que semestre te encuentras?\n");
-            scanf("%d", &Datos[i].Semestre);
+            printf("En que semestre te encuentras?\n");
+            scanf("%d", &Alumnos[i].Semestre);
 
-            if (Datos[i].Semestre < 1 || Datos[i].Semestre > 9)
+            if (Alumnos[i].Semestre < 1 || Alumnos[i].Semestre > 9)
                 printf("Semestres permitidos del 1 al 9. Intente de nuevo.\n");
-        } while (Datos[i].Semestre < 1 || Datos[i].Semestre > 9);
+        } while (Alumnos[i].Semestre < 1 || Alumnos[i].Semestre > 9);
 
-        for (j = 0; j < Datos[i].Semestre; j++) {
-            // Validar que el promedio sea entre 0 y 100
-            do {
+        for (j = 0; j < Alumnos[i].Semestre; j++) 
+        {
+            do 
+            {
                 printf("Ingresa el promedio del semestre %d:\n", j + 1);
-                scanf("%d", &Datos[i].Promedio[j]);
+                scanf("%f", &Alumnos[i].Promedio[j]);
 
-                if (Datos[i].Promedio[j] < 0 || Datos[i].Promedio[j] > 100)
+                promedio_general[i] += Alumnos[i].Promedio[j];
+
+                if (Alumnos[i].Promedio[j] < 0 || Alumnos[i].Promedio[j] > 100)
                     printf("Rango permitido 0-100. Intenta de nuevo.\n");
-            } while (Datos[i].Promedio[j] < 0 || Datos[i].Promedio[j] > 100);
+            }
+            while (Alumnos[i].Promedio[j] < 0 || Alumnos[i].Promedio[j] > 100);
         }
+        promedio_general[i] /= Alumnos[i].Semestre;
 
         printf("Ingresa tu carrera: \n");
-        getchar(); // Consumir el salto de línea previo
-        fgets(Datos[i].Carrera, 30, stdin);
-        Datos[i].Carrera[strcspn(Datos[i].Carrera, "\n")] = 0; // Eliminar el salto de línea
+        fflush(stdin);
+        gets(Alumnos[i].Carrera);
 
         i++;
         alumnos++;
 
-        printf("¿Quieres agregar otro alumno? (s/n): ");
+        printf("Quieres agregar otro alumno? (s/n): ");
+        fflush(stdin);
         scanf(" %c", &agregar);
     }
 
-    // Preguntar al usuario la carrera que desea filtrar
-    printf("¿Cual es la carrera por la que quieres filtrar?: \n");
-    getchar(); // Consumir el salto de línea previo
-    fgets(Carrera, 30, stdin);
-    Carrera[strcspn(Carrera, "\n")] = 0; // Eliminar el salto de línea
+    if (alumnos > 0)
+    {
+        printf("Cual es la carrera por la que quieres filtrar?: \n");
+        fflush(stdin);
+        gets(Carrera);
 
-    // Proceso de alumnos con promedio mayor o igual a 90
-    for (i = 0; i < alumnos; i++) {
-        // Calcular el promedio general del estudiante
-        int suma_promedio = 0;
-        for (j = 0; j < Datos[i].Semestre; j++) {
-            suma_promedio += Datos[i].Promedio[j];
+        for (i = 0; i < alumnos; i++) 
+        {
+            // Inciso A: Alumnos con promedio >= 90
+            if (promedio_general[i] >= 90) {
+                // Usar strcpy para copiar el nombre
+                strcpy(Alumnos_promedio_superior[contador_destacados].Datos.Nombre, Alumnos[i].Nombre);
+                Alumnos_promedio_superior[contador_destacados].Datos.Matricula = Alumnos[i].Matricula;
+                contador_destacados++;
+            }
+
+            // Inciso B: Alumnos de la carrera de computación con promedio >= 90
+            if (promedio_general[i] >= 90 && strcmp(Alumnos[i].Carrera, "Computacion") == 0) {
+                // Usar strcpy para copiar el nombre
+                strcpy(Alumnos_computacion[contador_computacion].Datos.Nombre, Alumnos[i].Nombre);
+                Alumnos_computacion[contador_computacion].Datos.Matricula = Alumnos[i].Matricula;
+                contador_computacion++;
+            }
+
+            // Inciso C
+            if (promedio_general[i] >= 90 && strcpy(Alumnos[i].Carrera, Carrera) == 0) {
+                strcpy(Alumnos_x_carrera[contador_carrera].Datos.Nombre, Alumnos[i].Nombre);
+                Alumnos_x_carrera[contador_carrera].Datos.Matricula = Alumnos[i].Matricula;
+            }
         }
-        float promedio_general = suma_promedio / (float)Datos[i].Semestre;
 
-        // Inciso a) Alumnos con promedio >= 90
-        if (promedio_general >= 90) {
-            strcpy(Datos_destacados[i].Datos.Nombre, Datos[i].Nombre);
-            Datos_destacados[i].Datos.Matricula = Datos[i].Matricula;
+        printf("%10-- Alumnos destacados:-- \n");
+        for (i = 0; i < contador_destacados; i++) 
+        {
+            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_promedio_superior[contador_destacados].Datos.Nombre, Alumnos_promedio_superior[contador_destacados].Datos.Matricula);
         }
 
-        // Inciso b) Alumnos de computación con promedio >= 90
-        if (promedio_general >= 90 && strcmp(Datos[i].Carrera, "Computacion") == 0) {
-            strcpy(Datos_destacados_computacion[i].Datos.Nombre, Datos[i].Nombre);
-            Datos_destacados_computacion[i].Datos.Matricula = Datos[i].Matricula;
+        printf("%10-- Alumnos destacados de computacion:-- \n");
+        for (i = 0; i < contador_computacion; i++) 
+        {
+            
+            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_computacion[contador_computacion].Datos.Nombre, Alumnos_computacion[contador_computacion].Datos.Matricula);
         }
 
-        // Inciso c) Alumnos de la carrera específica con promedio >= 90
-        if (promedio_general >= 90 && strcmp(Datos[i].Carrera, Carrera) == 0) {
-            strcpy(Datos_destacados_computacion[i].Datos.Nombre, Datos[i].Nombre);
-            Datos_destacados_computacion[i].Datos.Matricula = Datos[i].Matricula;
+        printf("%10 -- Alumnos destacados de %s: --\n", Carrera);
+        for (i = 0; i < contador_carrera; i++) 
+        {
+            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_x_carrera[contador_carrera].Datos.Nombre, Alumnos_x_carrera[contador_carrera].Datos.Matricula);
         }
     }
-
-    // Mostrar los alumnos destacados
-    printf("Alumnos destacados:\n");
-    for (i = 0; i < alumnos; i++) {
-        if (Datos_destacados[i].Datos.Matricula != 0) {
-            printf("Nombre: %s, Matricula: %d\n", Datos_destacados[i].Datos.Nombre, Datos_destacados[i].Datos.Matricula);
-        }
-    }
-
-    printf("Alumnos destacados de computacion:\n");
-    for (i = 0; i < alumnos; i++) {
-        if (Datos_destacados_computacion[i].Datos.Matricula != 0) {
-            printf("Nombre: %s, Matricula: %d\n", Datos_destacados_computacion[i].Datos.Nombre, Datos_destacados_computacion[i].Datos.Matricula);
-        }
-    }
-
-    return 0;
+    else
+        printf("No se ingresaron datos.\n");
 }
