@@ -104,7 +104,7 @@ int main()
             }
 
             // Inciso B: Alumnos de la carrera de computación con promedio >= 90
-            if (promedio_general[i] >= 90 && strcmp(Alumnos[i].Carrera, "Computacion") == 0) {
+            if (promedio_general[i] >= 90 && strcmp(Alumnos[i].Carrera, "computacion") == 0) {
                 // Usar strcpy para copiar el nombre
                 strcpy(Alumnos_computacion[contador_computacion].Datos.Nombre, Alumnos[i].Nombre);
                 Alumnos_computacion[contador_computacion].Datos.Matricula = Alumnos[i].Matricula;
@@ -112,30 +112,34 @@ int main()
             }
 
             // Inciso C
-            if (promedio_general[i] >= 90 && strcpy(Alumnos[i].Carrera, Carrera) == 0) {
+            if (promedio_general[i] >= 90 && strcmp(Alumnos[i].Carrera, Carrera) == 0) {
                 strcpy(Alumnos_x_carrera[contador_carrera].Datos.Nombre, Alumnos[i].Nombre);
                 Alumnos_x_carrera[contador_carrera].Datos.Matricula = Alumnos[i].Matricula;
+                contador_carrera++;
             }
         }
 
         printf("%10-- Alumnos destacados:-- \n");
-        for (i = 0; i < contador_destacados; i++) 
-        {
-            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_promedio_superior[contador_destacados].Datos.Nombre, Alumnos_promedio_superior[contador_destacados].Datos.Matricula);
-        }
+        if (contador_destacados != 0)
+            for (i = 0; i < contador_destacados; i++) 
+                printf("*Nombre: %-6s\nMatricula: %-6d\n", Alumnos_promedio_superior[i].Datos.Nombre, Alumnos_promedio_superior[i].Datos.Matricula);
+        else
+            printf("%10###### NO DATA ######");
 
         printf("%10-- Alumnos destacados de computacion:-- \n");
-        for (i = 0; i < contador_computacion; i++) 
-        {
-            
-            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_computacion[contador_computacion].Datos.Nombre, Alumnos_computacion[contador_computacion].Datos.Matricula);
-        }
+        if (contador_computacion != 0)
+            for (i = 0; i < contador_computacion; i++) 
+                printf("*Nombre: %-6s\n Matricula: %-6d\n", Alumnos_computacion[i].Datos.Nombre, Alumnos_computacion[i].Datos.Matricula);
+        else
+            printf("%10###### NO DATA ######");
+        
+        printf("%10-- Alumnos destacados de %s: --\n", Carrera);
 
-        printf("%10 -- Alumnos destacados de %s: --\n", Carrera);
-        for (i = 0; i < contador_carrera; i++) 
-        {
-            printf("Nombre: %-6s\n Matricula: %-6d\n", Alumnos_x_carrera[contador_carrera].Datos.Nombre, Alumnos_x_carrera[contador_carrera].Datos.Matricula);
-        }
+        if(contador_carrera != 0)
+            for (i = 0; i < contador_carrera; i++) 
+                printf("*Nombre: %-6s\n Matricula: %-6d\n", Alumnos_x_carrera[i].Datos.Nombre, Alumnos_x_carrera[i].Datos.Matricula);
+        else
+            printf("%10###### NO DATA ######");
     }
     else
         printf("No se ingresaron datos.\n");
