@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 
 struct Estudiante {
@@ -29,6 +30,9 @@ int main()
     struct Alumnos_destacados Alumnos_promedio_superior[20];
     struct Alumnos_computacion_destacados Alumnos_computacion[20];
     struct Alumnos_destacados Alumnos_x_carrera[20];
+    char carreras[500] = {"LCC", "LM", "LMAD", "LF", "LSTI", "LA"};
+    bool Carrera_valida = false;
+    
     
     char Carrera[30];
     float promedio_general[20] = {0};
@@ -75,9 +79,28 @@ int main()
         }
         promedio_general[i] /= Alumnos[i].Semestre;
 
-        printf("Ingresa tu carrera: \n");
-        fflush(stdin);
-        gets(Alumnos[i].Carrera);
+        // Validar que la carrera este dentro del array
+        do
+        {
+            printf("Ingresa tu carrera: \n");
+            fflush(stdin);
+            gets(Alumnos[i].Carrera);
+
+            for (i = 0 ; i < 6; i++)
+            {
+                if (strcmp(Alumnos[i].Carrera, carreras) == 0)
+                {
+                    Carrera_valida = true;
+                    break;
+                }
+            }
+
+            if (!Carrera_valida) {
+                printf("Carrera no válida. Intenta de nuevo.\n");
+        }
+        } while (!Carrera_valida);
+        
+        
 
         i++;
         alumnos++;
