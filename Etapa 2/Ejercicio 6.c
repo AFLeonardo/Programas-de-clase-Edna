@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <ctype.h>
-
-bool ValidarLetraEnString(char *string, char letra);
+// Utilizar codigo ASCII
+bool ValidarLetraEnString(char *, char *);
 bool ValidarCadena(char *cadena);
 
 int main()
@@ -16,6 +15,9 @@ int main()
     {
         printf("Ingrese una cadena de caracteres: ");
         gets(cadena);
+        // Validar con codigo ASCII
+        if(!ValidarCadena(cadena))
+            printf("ERROR. \nCadena no valida.\n")
 
     } while (!ValidarCadena(cadena));
 
@@ -24,9 +26,9 @@ int main()
     scanf(" %c", &letra);
 
     if (islower(letra))
-        encontrada = ValidarLetraEnString(&cadena, letra);
+        encontrada = ValidarLetraEnString(&cadena, &letra);
     else
-        encontrada = ValidarLetraEnString(&cadena, toupper(letra));
+        encontrada = ValidarLetraEnString(&cadena, toupper(&letra));
 
 
     printf("La letra \"%c\" %s en la cadena \n\"%s\"\n", letra, encontrada ? "esta" : "no esta", cadena);
@@ -48,7 +50,8 @@ bool ValidarLetraEnString(char *string, char letra)
 
 bool ValidarCadena(char *cadena) 
 {
-    while (*cadena) 
+    bool valido = false;
+    while (*cadena != "\0" || (*cadena > 65 || *cadena <= 90)) 
     {
         if (!isalpha(*cadena) && !isspace(*cadena)) {
             return false; 
