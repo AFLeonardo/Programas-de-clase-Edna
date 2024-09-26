@@ -45,7 +45,7 @@ bool ValidarLetraEnString(char *string, char *letra)
     return false;
 }
 
-
+// Rama main
 bool ValidarCadena(char *cadena) 
 {
     while (*cadena != '\0') 
