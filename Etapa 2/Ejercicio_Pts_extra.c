@@ -3,6 +3,7 @@
 #include <string.h>
 
 // Solicitar 5 nombres y guardalos en arreglo de punteros
+// ALFONSO RUIZ GRUPO 33
 
 int main()
 {
@@ -20,10 +21,9 @@ int main()
         strcpy(Lista_nombrePtr[i], nombre);
     }
 
-
     printf("%20s", "\n--------------------------------------\n");
     printf("%10s %20s\n", "Nombres", "Direccion en memoria");
     for(i=0; i<5; i++)
-         printf("%10s %20p\n", Lista_nombrePtr[i], Lista_nombrePtr[i]);
+         printf("%10s %-20p\n", Lista_nombrePtr[i], Lista_nombrePtr[i]);
     return 0;
 }
