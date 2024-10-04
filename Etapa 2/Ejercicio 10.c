@@ -159,7 +159,7 @@ void Buscar_empleado(char *Nombre)
 
     if ((archivo = fopen("Empleados.txt", "r")) == NULL)
     {
-        printf("Error al abrir el archivo.");
+        printf("Error al abrir el archivo.\n");
     }
     else
     {
@@ -169,17 +169,14 @@ void Buscar_empleado(char *Nombre)
             {
                 encontrado = true;
                 printf("%10s %10s %10s %10s\n", "Numero", "Nombre", "Categoria", "Sueldo");
+                printf("%10d %10s %10c %10.2f\n", Num_empleado, Nombre_archivo, Categoria, Sueldo);
             }
-            fclose(archivo);
         }
         
-        if (encontrado)
+        if (!encontrado)
         {
-            printf("%10d %10s %10c %10.2f\n", Num_empleado, Nombre_archivo, Categoria, Sueldo);
-            printf("\n");
-        }
-        else
             printf("Empleado no encontrado.\n");
-        
+        }
+        fclose(archivo);
     }
 }
