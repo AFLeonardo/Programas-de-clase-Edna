@@ -12,51 +12,36 @@ struct Peliculas
 };
 
 void Leer_guardar_datos(FILE *);
-void Mostrar_xcategoria(char *);
+void Mostrar_xcategoria(FILE *, char *);
 void Inventario(FILE *archivo, int *clave, int *inventario_n);
 
 int main()
 {
-    char resp, Categoria;
+    char Categoria;
     FILE *archivo;
-    int opcion, i, clave, nuevo_inventario;
+    int opcion, clave, nuevo_inventario;
 
-    printf("Quieres agregar datos(S/N): ");
-    scanf("%c", &resp);
-
-    if (resp == 'S' || resp == 's')
+    system("cls");
+    do
     {
-        if ((archivo = fopen("peliculas.dat", "wb")) == NULL)
-            printf("Error al abrir el archivo");
-        else
-        {
-            //Creamos datos de la estructura vacio
-            struct Peliculas PeliculaVacio = {0, "", '\0', 0};
-            for (i=0 ;  i<=50 ; i++)
-                fwrite(&PeliculaVacio, sizeof(struct Peliculas), 1, archivo);
-            fclose(archivo);
-        }
+        printf("--- Menu ---\n"
+        "1. Leer datos y guardarlos\n"
+        "2. Mostrar pelicula por categoria indicada\n"
+        "3. Actualizar inventario\n"
+        "4. Salir\n"
+        "Opcion: ");
+        scanf("%d", &opcion);
 
-        while (resp == 'S' || resp == 's')
-        {
-        
-            do
-            {
-                system("cls");
-                printf("--- Menu ---\n"
-                "1. Leer datos y guardarlos\n"
-                "2. Mostrar pelicula por categoria indicada\n"
-                "3. Actualizar inventario\n"
-                "4. Salir\n"
-                "Opcion: ");
-                scanf("%d", &opcion);
-
-            } while (opcion > 4 || opcion < 1);
-            
-            switch(opcion)
+        if(opcion > 4 || opcion < 1)
+            printf("Opcion no valida. Intenta de muevo.\n");
+    } while (opcion > 4 || opcion < 1);
+    
+    while (opcion != 4)
+    {
+        switch(opcion)
             {
                 case 1:
-                    if ((archivo = fopen("peliculas.dat", "ab+")) == NULL)
+                    if ((archivo = fopen("peliculas.dat", "a")) == NULL)
                         printf("Error al abrir el archivo");
                     else
                     {
@@ -81,25 +66,33 @@ int main()
                         fflush(stdin);
                         scanf("%c", &Categoria);
 
-                        if (!((Categoria >= 'A' && Categoria <= 'D') || (Categoria >= 'a' && Categoria <= 'd')))
+                        if ((Categoria <= 'A' && Categoria >= 'D') || (Categoria <= 'a' && Categoria >= 'd'))
                         {
                             printf("\nSolo estan permitidas las categorias mencionandas.");
                             system("pause");
                         }
                     }
-                    while(!((Categoria >= 'A' && Categoria <= 'D') || (Categoria >= 'a' && Categoria <= 'd')));
-
-                    Mostrar_xcategoria(&Categoria);
+                    while((Categoria <= 'A' && Categoria >= 'D') || (Categoria <= 'a' && Categoria >= 'd'));
+                    
+                    if ((archivo = fopen("peliculas.dat", "r")) == NULL)
+                        printf("Error al abrir el archivo.\n");
+                    else
+                    {
+                        Mostrar_xcategoria(archivo, &Categoria);
+                        fclose(archivo);
+                    }
+                    
                     break;
 
                 case 3:
-                    if ((archivo = fopen("peliculas.dat", "rb+")) == NULL)
+
+                    if ((archivo = fopen("peliculas.dat", "r+")) == NULL)
                         printf("Error al abrir el archivo");
                     else
                     {
                         do
                         {
-                            printf("Ingresa la clave de la pelicula a actulizar su inventario: ");
+                            printf("Ingresa la clave de la pelicula a actualizar su inventario: ");
                             scanf("%d", &clave);
 
                             if (clave < 0)
@@ -117,20 +110,30 @@ int main()
                             
                         } while (nuevo_inventario < 0);
 
-                        Inventario(archivo,&clave, &nuevo_inventario);
+                        Inventario(archivo, &clave, &nuevo_inventario);
                         system("pause");
                     }
                     break;
 
                 case 4:
                     printf("Adios");
-                    resp = 'n';
                     break;
             }
         }
+            do
+                {
+                    system("cls");
+                    printf("--- Menu ---\n"
+                    "1. Leer datos y guardarlos\n"
+                    "2. Mostrar pelicula por categoria indicada\n"
+                    "3. Actualizar inventario\n"
+                    "4. Salir\n"
+                    "Opcion: ");
+                    scanf("%d", &opcion);
+
+                } while (opcion > 4 || opcion < 1);
+            
     }
-    else
-        printf("Ok...nos vemos...");
     
     return 0;
 }
@@ -138,6 +141,7 @@ int main()
 void Leer_guardar_datos(FILE *archivo)
 {
     struct Peliculas pelicula;
+
     printf("Clave: ");
     scanf("%d", &pelicula.clave);
     printf("Descripcion: ");
@@ -154,21 +158,22 @@ void Leer_guardar_datos(FILE *archivo)
         
     } while (!((pelicula.categoria >= 'A' && pelicula.categoria <= 'D') || (pelicula.categoria >= 'a' && pelicula.categoria <= 'd')));
     
-    
-    printf("Inventario: ");
-    scanf("%d", &pelicula.inventario);
+    do
+    {
+        printf("Inventario: ");
+        scanf("%d", &pelicula.inventario);
+
+        if(pelicula.inventario < 0)
+            printf("Como valor minimo se acepta 1.\n");
+    } while (pelicula.inventario < 0);
 
     fwrite(&pelicula, sizeof(struct Peliculas), 1 ,archivo);
 }
 
-void Mostrar_xcategoria(char *Categoria)
+void Mostrar_xcategoria(FILE *archivo, char *Categoria)
 {
-    FILE *archivo;
     struct Peliculas pelicula;
-    int peliculasEncontradas = 0; 
-    
-    if ((archivo = fopen("peliculas.dat", "rb")) == NULL)
-        printf("Error al abrir el archivo.\n");
+    bool peliculasEncontrada = false; 
     
     while (fread(&pelicula, sizeof(struct Peliculas), 1, archivo)) 
     {
@@ -180,20 +185,19 @@ void Mostrar_xcategoria(char *Categoria)
             printf("Categoria: %c\n", pelicula.categoria);
             printf("Inventario: %d\n", pelicula.inventario);
             printf("----------------------------------------\n");
-            peliculasEncontradas++;
+            peliculasEncontrada = true;
         }
     }
     fclose(archivo);
 
-    if (peliculasEncontradas == 0) 
+    if (!peliculasEncontrada) 
         printf("\nNo se encontraron peliculas en la categoria %c.\n", *Categoria);
-    else
-        printf("\nSe encontraron %d pelicula(s) en la categoria %c.\n", peliculasEncontradas, *Categoria);
     system("pause");
 }
 
 void Inventario(FILE *archivo, int *clave, int *inventario_n)
 {
+    // Hay que modificarlo para que funcione con el fseek
     struct Peliculas Pelicula_Modificada;
     bool encontrado = false;
 
@@ -204,7 +208,7 @@ void Inventario(FILE *archivo, int *clave, int *inventario_n)
             Pelicula_Modificada.inventario = *inventario_n;
             fseek(archivo, -sizeof(struct Peliculas), SEEK_CUR);
             fwrite(&Pelicula_Modificada, sizeof(struct Peliculas), 1, archivo);
-            printf("Inventario actualizado exitasamente.\n");
+            printf("Inventario actualizado exitosamente.\n");
             encontrado = true;
         }
     }
