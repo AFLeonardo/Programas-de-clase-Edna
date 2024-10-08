@@ -61,7 +61,7 @@ int main()
                     else
                     {
                         Leer_guardar_datos(archivo);
-                        printf("Datos guardados correctamente.\n")
+                        printf("Datos guardados correctamente.\n");
                         fclose(archivo);
                     }
                     break;
