@@ -1,0 +1,20 @@
+# Archivos de compilación
+*.o
+*.exe
+*.out
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de configuración del editor
+*.swp
+*.swo
+*.DS_Store
+*.vscode/
+*.idea/
+
+# Archivos de dependencias y configuraciones
+/build/
+/bin/
+/obj/
