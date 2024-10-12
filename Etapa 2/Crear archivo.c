@@ -12,11 +12,12 @@ int main()
 {
     FILE *archivo;
     int i;
+    struct Peliculas PeliculaVacio = {0, "", '\0', 0};
+
     if ((archivo = fopen("peliculas.dat", "wb")) == NULL)
             printf("Error al abrir el archivo");
         else
         {
-            struct Peliculas PeliculaVacio = {0, "", '\0', 0};
             for (i=0 ;  i<=50 ; i++)
                 fwrite(&PeliculaVacio, sizeof(struct Peliculas), 1, archivo);
             fclose(archivo);
