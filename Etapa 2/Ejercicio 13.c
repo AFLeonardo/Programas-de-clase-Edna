@@ -17,6 +17,7 @@ char menu();
 void Lectura_datos(FILE *);
 void Mostrar_Planeta_X(FILE *, int *);
 void Mostrar_Planeta_Vida(FILE *);
+void Mostrar_Planetas_Agua(FILE *);
 
 int main()
 {   
@@ -81,6 +82,14 @@ int main()
             case 'D':
             case 'd':
                 printf("\nMostrar en forma tabular todos los planetas y sus datos que en sus caracteristicas contienen la palabra agua\n");
+                if ( (archivo = fopen("Planetas.txt","rb")) == NULL)
+                    printf("Error al abrir el archivo.");
+                else
+                {
+                    Mostrar_Planetas_Agua(archivo);
+                    // Cerrando archivo
+                    fclose(archivo);
+                }
                 break;
             
             case 'E':
@@ -104,8 +113,8 @@ int main()
 char menu()
 {
     char opcion;
-    printf("\nMenu");
-    printf("\nA - Lectura de datos\n");
+    printf("\nMenu\n");
+    printf("A - Lectura de datos\n");
     printf("B - Mostrar datos de planeta en particular\n");
     printf("C - Mostrar en forma tabular todos los planetas y sus datos que tienen posibilidad de vida\n");
     printf("D - Mostrar en forma tabular todos los planetas y sus datos que en sus caracteristicas contienen la palabra agua\n");
@@ -212,4 +221,24 @@ void Mostrar_Planeta_Vida(FILE *archivo)
     printf("============================================================================================\n");
     if (!encontrado)
         printf("\n\nNO SE ENCONTRO NINGUN PLANETA CON VIDA\n");
+}
+
+void Mostrar_Planetas_Agua(FILE *archivo)
+{
+    struct Planeta Y_Planeta;
+    bool encontrado = false;
+    printf("============================================================================================");
+    printf("\n%-20s %-20s %-20s %-20s %-20s\n", "Clave", "Nombre", "Dimension", "Caracteristicas", "Vida");
+    printf("============================================================================================\n");
+    while (fread(&Y_Planeta, sizeof(struct Planeta), 1, archivo))
+    {
+        if (strcmp(Y_Planeta.caracteristicas, "agua") == 0 || strcmp(Y_Planeta.caracteristicas, "AGUA") == 0)
+        {
+            printf("%-20d %-20s %-20d %-20s %-20s\n", Y_Planeta.clave, Y_Planeta.nombre, Y_Planeta.dimension, Y_Planeta.caracteristicas, "Si");
+            encontrado = true;
+        }
+    }
+    printf("============================================================================================\n");
+    if (!encontrado)
+        printf("\n\nNO SE ENCONTRO NINGUN PLANETA CON AGUA\n");
 }
