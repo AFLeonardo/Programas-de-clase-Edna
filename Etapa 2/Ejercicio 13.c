@@ -40,7 +40,7 @@ int main()
             case 'A':
             case 'a':
                 printf("\nLectura de datos\n");
-                if ( (archivo = fopen("Planetas.txt","ab+")) == NULL)
+                if ( (archivo = fopen("Planetas.txt","rb+")) == NULL)
                     printf("Error al abrir el archivo.");
                 else
                 {
@@ -53,13 +53,12 @@ int main()
             case 'B':
             case 'b':
                 printf("\nMostrar planeta\n");
-                if ( (archivo = fopen("Planetas.txt","rb")) == NULL)
+                if ( (archivo = fopen("Planetas.txt","rb+")) == NULL)
                     printf("Error al abrir el archivo.");
                 else
                 {
                     printf("Ingresa la clave del planeta: ");
                     scanf("%d", &X_clave);
-
                     Mostrar_Planeta_X(archivo, &X_clave);
                     // Cerrando archivo
                     fclose(archivo);
@@ -169,31 +168,32 @@ void Lectura_datos(FILE *archivo)
     else
         planeta_X.vida = false;
 
-    // Escribir los datos en el archivo directo
+    // Escribir los datos en el archivo directo 
+    fseek(archivo, planeta_X.clave * sizeof(struct Planeta), SEEK_SET);
     fwrite(&planeta_X, sizeof(struct Planeta), 1, archivo);
 }
 
-void Mostrar_Planeta_X(FILE *archivo, int *clave) {
+void Mostrar_Planeta_X(FILE *archivo, int *clave) 
+{
     struct Planeta Y_Planeta;
     bool encontrado = false;
     char vida[3] = "No";
 
-    fseek(archivo, 0, SEEK_SET);
-
-    while (fread(&Y_Planeta, sizeof(struct Planeta), 1, archivo) && !encontrado) 
+    // MOVEMOS PUNTERO
+    fseek(archivo, (*clave ) * sizeof(struct Planeta), SEEK_SET);
+    fread(&Y_Planeta, sizeof(struct Planeta), 1, archivo);
+    
+    if (Y_Planeta.clave == *clave) 
     {
-        if (Y_Planeta.clave == *clave) 
-        {
-            encontrado = true; 
-            if (Y_Planeta.vida)
-                strcpy(vida, "Si");
+        if (Y_Planeta.vida)
+            strcpy(vida, "Si");
             
-            printf("============================================================================================\n");
-            printf("%-20s %-20s %-20s %-20s %-20s\n", "Clave", "Nombre", "Dimension", "Caracteristicas", "Vida");
-            printf("============================================================================================\n");
-            printf("%-20d %-20s %-20d %-20s %-20s\n", Y_Planeta.clave, Y_Planeta.nombre, Y_Planeta.dimension, Y_Planeta.caracteristicas, vida);
-            printf("============================================================================================\n");
-        }
+        printf("============================================================================================\n");
+        printf("%-20s %-20s %-20s %-20s %-20s\n", "Clave", "Nombre", "Dimension", "Caracteristicas", "Vida");
+        printf("============================================================================================\n");
+        printf("%-20d %-20s %-20d %-20s %-20s\n", Y_Planeta.clave, Y_Planeta.nombre, Y_Planeta.dimension, Y_Planeta.caracteristicas, vida);
+        printf("============================================================================================\n");
+        encontrado = true; 
     }
 
     if (!encontrado) 

@@ -15,7 +15,7 @@ void Leer_guardar_datos_Secuencial(FILE *);
 void Mostrar_xcategoria_Secuencial(FILE *, char *);
 
 void Leer_guardar_datos_Directo(FILE *);
-void Mostrar_xcategoria_Directo(FILE *);
+void Mostrar_xcategoria_Directo(FILE *, char *);
 void Inventario(FILE *archivo, int *clave, int *inventario_n);
 
 int main()
@@ -113,14 +113,34 @@ int main()
             break;
 
         case 4:
-            if ((archivo = fopen("peliculas.dat", "rb+")) == NULL)
+            do
+            {
+                system("cls");
+                printf("SELECCIONA LA CATEGORIA A BUSCAR:\n"
+                       "A: Drama\n"
+                       "B: Suspenso\n"
+                       "C: Misterio\n"
+                       "D: Infantil\n"
+                       "Categoria: ");
+
+                fflush(stdin);
+                scanf("%c", &Categoria);
+
+                if ((Categoria < 'A' || Categoria > 'D') && (Categoria < 'a' || Categoria > 'd'))
+                {
+                    printf("\nSolo estan permitidas las categorias mencionandas.\n");
+                    system("pause");
+                }
+            } while ((Categoria < 'A' || Categoria > 'D') && (Categoria < 'a' || Categoria > 'd'));
+
+            if ((archivo = fopen("peliculas.dat", "r")) == NULL)
             {
                 printf("Error al abrir el archivo.\n");
                 system("pause");
-            }  
+            }
             else
             {
-                Mostrar_xcategoria_Directo(archivo);
+                Mostrar_xcategoria_Directo(archivo, &Categoria);
                 system("pause");
                 fclose(archivo);
             }
@@ -302,9 +322,10 @@ void Leer_guardar_datos_Directo(FILE *archivo)
     fwrite(&pelicula, sizeof(struct Peliculas), 1, archivo);
 }
 
-void Mostrar_xcategoria_Directo(FILE *archivo)
+void Mostrar_xcategoria_Directo(FILE *archivo, char *Categoria)
 {
     struct Peliculas pelicula;
+    bool peliculasEncontrada = false;
 
     while (fread(&pelicula, sizeof(struct Peliculas), 1, archivo))
     {

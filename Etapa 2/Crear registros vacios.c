@@ -15,7 +15,7 @@ int main()
 {
     FILE *archivo;
     int i;
-    struct Planeta Registro = {0, "", 0, "", NULL};
+    struct Planeta Registro = {0, "", 0, "", false};
 
     if ((archivo = fopen("Planetas.txt", "w")) == NULL)
             printf("Error al abrir el archivo");
